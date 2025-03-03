@@ -12,6 +12,12 @@ const getAllContacts = asyncHandler(async (req, res) => {
   res.render('index', { contacts: contacts });
 });
 
+// @desc View add contact form
+// @route GET /contacts/add
+const addContactForm = (req, res) => {
+  res.render('add');
+};
+
 // @desc Create a contact
 // @route POST /contacts
 const createContact = asyncHandler(async (req, res) => {
@@ -25,7 +31,7 @@ const createContact = asyncHandler(async (req, res) => {
       email,
       phone,
     });
-    res.status(201).send('Create Contact');
+    res.redirect('/contacts');
   }
 });
 
@@ -33,7 +39,7 @@ const createContact = asyncHandler(async (req, res) => {
 // @route GET /contacts/:id
 const getContact = asyncHandler(async (req, res) => {
   const contact = await Contact.findById(req.params.id);
-  res.status(200).send(contact);
+  res.render('update', { contact: contact });
 });
 
 // @desc Update contact
@@ -47,19 +53,14 @@ const updateContact = asyncHandler(async (req, res) => {
     { name, email, phone },
     { new: true }
   );
-  res.status(200).send(updatedContact);
+  res.redirect('/contacts');
 });
 
 // @desc Delete contact
 // @route DELETE /contacts/:id
 const deleteContact = asyncHandler(async (req, res) => {
-  const contact = await Contact.findById(req.params.id);
-  if (!contact) {
-    res.status(404);
-    throw new Error('Contact not found');
-  }
-  await contact.deleteOne();
-  res.status(200).send(`Delete Contact for ID: ${req.params.id}`);
+  await Contact.findByIdAndDelete(req.params.id);
+  res.redirect('/contacts');
 });
 
 module.exports = {
@@ -68,4 +69,5 @@ module.exports = {
   getContact,
   updateContact,
   deleteContact,
+  addContactForm,
 };
