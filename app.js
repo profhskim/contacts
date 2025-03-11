@@ -20,6 +20,8 @@ app.use(methodOverride('_method'));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use('/', require('./routes/loginRouters'));
 app.use('/contacts', require('./routes/contactRoutes'));
 
 app.listen(port, () => {
